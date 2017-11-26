@@ -1,6 +1,10 @@
 import React from 'react';
 
 class VideoList extends React.Component{
+
+    handleSelect = (video) => {
+        this.props.makeActive(video);
+    }
     
     render(){
         console.log('props in videoList', this.props);
@@ -10,14 +14,13 @@ class VideoList extends React.Component{
 
         let videoItems = this.props.videos.map((video) => {
             const thumbnailURL = video.thumbnails.default.url;
-            return <li key={video.id} className="media">
+            return <li key={video.id} className="media" onClick={() => this.handleSelect(video)}>
                 <div className="media-left">
                     <img className="media-object" src={thumbnailURL} />
                 </div>
                 <div className="media-body">
                     <h4 className="media-heading">{video.title}</h4>
-                    <p>Description here...</p>
-                </div>
+                </div><hr />
             </li>
         })
 

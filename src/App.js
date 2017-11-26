@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import UTubeSearch from 'youtube-search';
 import VideoList from './components/VideoList';
+import VideoDetails from './components/VideoDetails';
 //import SearchUTube from './components/SearchUTube';
 //import { Navbar, Jumbotron, Button } from 'react-bootstrap';
 import './App.css';
@@ -16,11 +17,12 @@ class App extends Component {
     super(props);
 
     this.state = {
+      searchTerm: '',
       videos: [],
-      searchTerm: 'nigeria'
+      activeVideo: []
     }
 
-    this.videoSearch(this.state.searchTerm, opts);
+    this.videoSearch(this.state.searchTerm);
   }//constructor
 
   videoSearch = (searchTerm) => {
@@ -31,35 +33,37 @@ class App extends Component {
         console.log(data);
         this.setState({
           searchTerm: searchTerm,
-          videos: data
+          videos: data,
+          activeVideo: data[1]
         })
+        console.log('activeVideo ',this.state.activeVideo);
       }
     });
   }
 
   render() {
-    const debouncedSearch = _.debounce((searchTerm) => { this.videoSearch(searchTerm) }, 400);
+    const videoSearch = _.debounce((searchTerm) => { this.videoSearch(searchTerm) }, 500);
     return (
       <div>
-        <h1 id="main-header">Hello, welcome to my UTube!</h1>
+        <h1 id="main-header">Hello, Welcome to my UTune!</h1>
         <div className="row">
           <div className="form-group col-md-offset-3 col-md-6">
-            <input
-              type='text'
-              className="form-control"
-              value={this.state.searchTerm}
-              placeholder='search videos'
-              autoFocus
-              onChange={(e) => debouncedSearch(e.target.value)}
-            />
+                <input
+                  type='text'
+                  className="form-control"
+                  placeholder='search videos'
+                  autoFocus
+                  onChange={(e) => videoSearch(e.target.value)} />
           </div>
         </div><hr />
         <div className="row">
           <div className="col-md-8 pull-left">
-            <h3>Video Details coming soon...</h3>
+            <VideoDetails activeVideo={this.state.activeVideo}/>
           </div>
           <div className="col-md-4 pull-right">
-            <VideoList videos={this.state.videos} />
+            <VideoList 
+              videos={this.state.videos}
+              makeActive={(video) => this.setState({activeVideo: video})} />
           </div>
         </div>
       </div>
